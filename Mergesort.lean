@@ -33,42 +33,35 @@ def mergesort : List Nat → List Nat
 | [a] => [a]
 | (x :: (y :: ys)) => 
   have : List.length (first_half (x :: (y :: ys))) < List.length (x :: (y :: ys)) := by
-    rw [List.length_cons]
-    rw [List.length_cons]
+    rw [
+      List.length_cons,
+      List.length_cons,
+      Nat.succ_eq_add_one,
+      Nat.add_assoc,
+      one_add_one_eq_two,
+      first_half,
+      List.length_cons,
+      List.length_cons,
+    ]
+    simp
+    rw [Nat.succ_eq_add_one, Nat.add_assoc, one_add_one_eq_two]
+    simp
     rw [Nat.succ_eq_add_one]
-    rw [Nat.add_assoc]
-    simp
-    rw [one_add_one_eq_two]
-    rw [first_half]
-    rw [List.length_cons]
-    rw [List.length_cons]
-    simp
-    rw [Nat.succ_eq_add_one]
-    rw [Nat.add_assoc]
-    rw [one_add_one_eq_two]
-    simp
-    rw [Nat.succ_eq_add_one]
-    simp
     have half_lemma := half_add_one_lt_add_two (List.length ys)
     rw [min_eq_left]
-    simp
     exact half_lemma
-    simp
     exact Nat.le_of_lt half_lemma
   have : List.length (second_half (x :: (y :: ys))) < List.length (x :: (y :: ys)) := by
-    rw [List.length_cons, List.length_cons]
+    rw [
+      List.length_cons,
+      List.length_cons,
+      Nat.succ_eq_add_one,
+      Nat.add_assoc,
+      one_add_one_eq_two,
+      second_half,
+    ]
     simp
-    rw [Nat.succ_eq_add_one]
-    simp
-    rw [Nat.add_assoc]
-    simp
-    rw [one_add_one_eq_two]
-    simp
-    rw [second_half]
-    simp
-    rw [Nat.succ_eq_add_one]
-    simp
-    rw [Nat.add_assoc, one_add_one_eq_two]
+    rw [Nat.succ_eq_add_one, Nat.add_assoc, one_add_one_eq_two]
     simp
     rw [Nat.succ_eq_add_one]
     apply Nat.sub_lt_self
