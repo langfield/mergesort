@@ -1,3 +1,4 @@
+import Mathlib.Init.Data.List.Lemmas
 notation "ℕ" => Nat
 
 def merge : List ℕ → List ℕ → List ℕ
@@ -13,15 +14,29 @@ def first_half {α : Type} (xs : List α) : List α :=
 def second_half {α : Type} (xs : List α) : List α :=
   List.drop (xs.length / 2) xs
 
+theorem nonempty_first_half_lt {x : ℕ} {xs : List ℕ} : List.length (first_half (x :: xs)) < List.length (x :: xs) := by
+  rw [first_half]
+  simp
+  let l1 := List.length_take_le (Nat.succ (List.length xs) / 2) (x :: xs)
+  sorry
+
 def mergesort : List ℕ → List ℕ
 | [] => []
 | [a] => [a]
-| xs => 
-  have : List.length (first_half xs) < List.length xs := by
+| (x :: (y :: ys)) => 
+  have : List.length (first_half (x :: (y :: ys))) < List.length (x :: (y :: ys)) := by
+    rw [List.length_cons]
+    rw [List.length_cons]
+    rw [Nat.succ_eq_add_one]
+    rw [Nat.add_assoc]
+    simp
+    let lem : 1 + 1 = 2 := by simp
+    rw [lem]
     sorry
-  have : List.length (second_half xs) < List.length xs := by
+  have : List.length (second_half (x :: (y :: ys))) < List.length (x :: (y :: ys)) := by
+    rw [List.length_cons]
     sorry
-  merge (mergesort <| first_half xs) (mergesort <| second_half xs)
+  merge (mergesort <| first_half (x :: (y :: ys))) (mergesort <| second_half (x :: (y :: ys)))
 termination_by mergesort xs => xs.length
 
 def l := [1, 2, 3]
