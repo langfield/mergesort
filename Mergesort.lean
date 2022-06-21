@@ -16,7 +16,12 @@ def second_half {α : Type} (xs : List α) : List α :=
 def mergesort : List ℕ → List ℕ
 | [] => []
 | [a] => [a]
-| xs => merge (mergesort <| first_half xs) (mergesort <| second_half xs)
+| xs => 
+  have : List.length (first_half xs) < List.length xs := by
+    sorry
+  have : List.length (second_half xs) < List.length xs := by
+    sorry
+  merge (mergesort <| first_half xs) (mergesort <| second_half xs)
 termination_by mergesort xs => xs.length
 
 def l := [1, 2, 3]
