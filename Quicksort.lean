@@ -1,29 +1,23 @@
 import Mathlib
 
-def partition (A : List ℕ) (lo : ℤ) (hi : ℕ) : ℕ × List ℕ :=
-  let pivot := A[hi]
-  let i := lo - 1
-  do
+#check List.filterAux
 
-def quick (A : List ℕ) (lo : ℤ) (hi : ℕ) : List ℕ :=
-  if lo ≥ hi || lo < 0 then A else
-    let (p, B) := partition A lo hi
-    let left := quick B lo p - 1
-    let right := quick B p hi
-    left ++ right
+def filterAux (p : α → Bool) : List α → List α → List α
+  | [],    rs => rs.reverse
+  | a::as, rs => match p a with
+     | true  => filterAux p as (a::rs)
+     | false => filterAux p as rs
 
-
-#eval quick [3, 2, 1] (-1) 0
-#eval quick [3, 2, 1] 1 0
-#eval quick [3, 2, 1] 0 2
+@[inline] def filter (p : α → Bool) (as : List α) : List α :=
+  filterAux p as []
 
 def quick2 : List ℤ → List ℤ
 | [] => []
 | List.cons x xs =>
-  have first_half_terminates : List.length (List.filter (fun y => decide (y < x)) xs) < Nat.succ (List.length xs) := by
-    rw [List.filter, List.filterAux]
+  have first_half_terminates : List.length (filter (fun y => decide (y < x)) xs) < Nat.succ (List.length xs) := by
+    rw [filter]
     sorry
-  have first_half_terminates : List.length (List.filter (fun y => decide (y ≥ x)) xs) < Nat.succ (List.length xs) :=
+  have first_half_terminates : List.length (filter (fun y => decide (y ≥ x)) xs) < Nat.succ (List.length xs) :=
     sorry
-  quick2 (List.filter (λ y => y < x) xs) ++ x :: (quick2 (List.filter (λ y => y ≥ x) xs))
+  quick2 (filter (λ y => y < x) xs) ++ x :: (quick2 (filter (λ y => y ≥ x) xs))
 termination_by quick2 xs => xs.length
