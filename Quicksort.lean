@@ -1,26 +1,29 @@
 import Mathlib
-
-#check List.filterAux
+universe u
 
 def quick2 : List ℤ → List ℤ
 | [] => []
 | List.cons x xs =>
   have first_half_terminates : List.length (List.filter (fun y => decide (y < x)) xs) < Nat.succ (List.length xs) := by
     rw [List.filter]
-    cases xs
-    · rw [List.filterAux]
-      rw [List.reverse] 
-      rw [List.reverseAux]
-      rw [List.length]
-      rw [Nat.succ_eq_add_one, Nat.zero_add]
-      simp
-    · unfold List.filterAux
-      rename_i head tail
-      simp_arith
-      split
+    induction xs
+    repeat rw [List.filterAux, List.reverse, List.reverseAux]
+    simp_all_arith
+    rename_i ih
+    rename_i tail
+    rename_i head
+    unfold List.filterAux
+    split
+    rename_i head_lt_x
+    · simp_all_arith
+
+      sorry
+    · apply (lt_trans ih)
+      simp_all_arith
 
 
-      
+
+
   have first_half_terminates : List.length (List.filter (fun y => decide (y ≥ x)) xs) < Nat.succ (List.length xs) :=
     sorry
   quick2 (List.filter (λ y => y < x) xs) ++ x :: (quick2 (List.filter (λ y => y ≥ x) xs))
