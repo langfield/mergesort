@@ -7,45 +7,44 @@ def filter (p : α → Bool) : List α → List α
     | true => a :: filter p as
     | false => filter p as
 
+def second_half_terminates (xs : List ℤ) (decider : ℤ → Bool) : List.length (filter decider xs) < Nat.succ (List.length xs) := by
+  induction xs
+  rw [filter]
+  simp_all_arith
+  rename_i ih
+  rename_i tail
+  rw [filter]
+  cases tail
+  split
+  simp_all_arith
+  simp_all_arith
+  split
+  simp_all_arith
+  apply le_trans ih
+  simp_all_arith
+
 def quick2 : List ℤ → List ℤ
 | [] => []
 | List.cons x xs =>
-  have first_half_terminates : List.length (filter (fun y => decide (y < x)) xs) < Nat.succ (List.length xs) := by
+  have _ : List.length (filter (fun y => decide (y < x)) xs) < Nat.succ (List.length xs) := by
     induction xs
     rw [filter]
     simp_all_arith
     rename_i ih
     rename_i tail
-    rename_i head
     rw [filter]
     cases tail
     split
     simp_all_arith
     simp_all_arith
     split
-    rename_i order
-    rename_i my_bool
-    rename_i tail
-    rename_i head
-    rename_i second_head
-    rw [List.length]
     simp_all_arith
-    rename_i head_not_lt_x
-    rename_i bool
-    rename_i tail
-    rename_i second_head
-    simp at ih
+    apply le_trans ih
     simp_all_arith
-    apply @le_trans ℤ 
-
-
-
-
-
-
-
-
-  have first_half_terminates : List.length (filter (fun y => decide (y ≥ x)) xs) < Nat.succ (List.length xs) :=
-    sorry
+  have _ : List.length (filter (fun y => decide (y ≥ x)) xs) < Nat.succ (List.length xs) := second_half_terminates xs (fun y => decide (y ≥ x))
   quick2 (filter (λ y => y < x) xs) ++ x :: (quick2 (filter (λ y => y ≥ x) xs))
 termination_by quick2 xs => xs.length
+
+#eval quick2 [1,2,3]
+#eval quick2 [3,2,1]
+#eval quick2 [3,1,2]
